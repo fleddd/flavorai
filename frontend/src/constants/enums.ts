@@ -1,0 +1,12 @@
+export const CuisineEnum = {
+    ITALIAN: 'ITALIAN',
+    MEXICAN: 'MEXICAN',
+    JAPANESE: 'JAPANESE',
+    INDIAN: 'INDIAN',
+    CHINESE: 'CHINESE',
+    AMERICAN: 'AMERICAN',
+    FRENCH: 'FRENCH',
+    MEDITERRANEAN: 'MEDITERRANEAN',
+    THAI: 'THAI',
+    OTHER: 'OTHER',
+} 

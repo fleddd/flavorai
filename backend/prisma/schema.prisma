@@ -1,0 +1,72 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma"
+  binaryTargets = ["native", "windows", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  refreshToken String?
+
+  recipes Recipe[] @relation("UserRecipes")
+}
+
+model Recipe {
+  id           String      @id @default(uuid())
+  title        String
+  timeToCook   Int
+  description  String
+  instructions String
+  cuisineType  CuisineType
+  imageUrl     String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  rating       Float       @default(0)
+
+  authorId String
+  author   User   @relation("UserRecipes", fields: [authorId], references: [id])
+
+  ingredients RecipeIngredient[]
+}
+
+model Ingredient {
+  id      String             @id @default(uuid())
+  name    String             @unique
+  recipes RecipeIngredient[]
+}
+
+model RecipeIngredient {
+  id       String @id @default(uuid())
+  quantity String
+  weight   Float?
+
+  recipeId     String
+  ingredientId String
+
+  recipe     Recipe     @relation(fields: [recipeId], references: [id])
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@unique([recipeId, ingredientId])
+}
+
+enum CuisineType {
+  ITALIAN
+  MEXICAN
+  JAPANESE
+  INDIAN
+  CHINESE
+  AMERICAN
+  FRENCH
+  MEDITERRANEAN
+  THAI
+  OTHER
+}

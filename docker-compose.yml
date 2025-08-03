@@ -1,0 +1,47 @@
+name: flavor-ai-app
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - '5000:5000'
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+    restart: unless-stopped
+    volumes:
+      - ./backend:/app
+      - node_modules:/app/node_modules
+    networks:
+      - flavor-network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - '5173:5173'
+    restart: unless-stopped
+    networks:
+      - flavor-network
+
+  db:
+    image: postgres:15
+    restart: always
+    env_file:
+      - ./backend/.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - flavor-network
+
+volumes:
+  postgres-data:
+  node_modules:
+
+
+networks:
+  flavor-network:
+    driver: bridge
